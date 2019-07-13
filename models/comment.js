@@ -1,17 +1,15 @@
 var mongoose = require("mongoose");
 
 var Schema = mongoose.Schema;
-var CommentSchema= new Schema({
-    name: {
-        type: String,
-        
-    },
+
+var CommentSchema = new Schema ({
     body: {
         type: String,
-        required: true
+        minlength: [1, "at least 1 character required"]
     },
-
 });
+
 var Comment = mongoose.model("Comment", CommentSchema);
+
 module.exports = Comment;
 
