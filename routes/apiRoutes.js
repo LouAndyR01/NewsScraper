@@ -40,136 +40,156 @@ module.exports = function (app) {
     });
     db.Article.create(result)
         .then(function (dbArticle) {
-            // View the added result in the console
             console.log(dbArticle);
         })
         .catch(function (err) {
-            // If an error occurred, log it
             console.log(err);
         });
+      });
+    });
+  });
+
+  app.get("/api/articles", function (req, res) {
+    db.Article.find({})
+        .then(function (dbArticle) {
+            res.json(dbArticle);
+        })
+        .catch(function (err) {
+            res.json(err);
+        });
+});
+
+app.delete("/api/articles", function (req, res) {
+  db.Article.remove({})
+      .then(function (dbArticle) {
+          res.json(dbArticle);
+      })
+      .catch(function (err) {
+          res.json(err);
+      });
 });
 
 
  
     
 
-      // Load response into cheerio and store in local variable for a shorthand selector
-      const $ = cheerio.load(response.data);
+ 
+//       const $ = cheerio.load(response.data);
   
-      // .item_content divs
-      $('div.item__content').each((i, element) => {
-        // Save an empty result object
-        const result = {};
+    
+//       $('div.item__content').each((i, element) => {
+
+//         const result = {};
   
-        result.title = $(element)
-          .find('h1')
-          .text();
+//         result.title = $(element)
+//           .find('h1')
+//           .text();
 
-        result.img = $(element)
-          .find('img-wrapper picture')
-          .children()
-          .first()
-          .attr('data-srcset');
+//         result.img = $(element)
+//           .find('img-wrapper picture')
+//           .children()
+//           .first()
+//           .attr('data-srcset');
 
-        result.link = $(element)
-          .find('.headline a')  
-          .attr('href')
+//         result.link = $(element)
+//           .find('.headline a')  
+//           .attr('href')
 
-        result.summary = $(element)
-          .find('.excerpt')
-          .first()
-          .text();
+//         result.summary = $(element)
+//           .find('.excerpt')
+//           .first()
+//           .text();
         
-        db.Article.update({ title: result.title}, { $set: result}, { upsert: true }).catch(
-            err => res.send(err)
-        );
-      });
-    })
-    .then(() => {
-        // Redirect to root route to display the index page
-        res.redirect('/');
-    });
-  });
+//         db.Article.update({ title: result.title}, { $set: result}, { upsert: true }).catch(
+//             err => res.send(err)
+//         );
+//       });
+//     })
+//     .then(() => {
+//         // Redirect to root route to display the index page
+//         res.redirect('/');
+//     });
+//   });
   
-        // Route for getting all Articles from the db
-  router.get("/articles", (req, res) => {
+//         // Route for getting all Articles from the db
+//   router.get("/articles", (req, res) => {
   
-    db.Article.find({})
-    .then(function(dbArticle) {
-      res.json(dbArticle)
-    })
-    .catch(function(err) {
-      res.json(err);
-    });
-  });
+//     db.Article.find({})
+//     .then(function(dbArticle) {
+//       res.json(dbArticle)
+//     })
+//     .catch(function(err) {
+//       res.json(err);
+//     });
+//   });
   
        
-  router.get("/articles/:id", (req, res) => {
+//   router.get("/articles/:id", (req, res) => {
     
-    db.Article.findOne({ _id: req.params.id })
-    .populate("note")
-    .then(function(dbArticle) {
-      res.json(dbArticle)
-    })
-    .catch(function(err) {
-      res.json(err);
-    });
-  });
+//     db.Article.findOne({ _id: req.params.id })
+//     .populate("note")
+//     .then(function(dbArticle) {
+//       res.json(dbArticle)
+//     })
+//     .catch(function(err) {
+//       res.json(err);
+//     });
+//   });
   
-  router.post("/articles/:id", (req, res) => {
+//   router.post("/articles/:id", (req, res) => {
     
-    db.Note.create(req.body)
-    .then(function(dbNote) {
-      return db.Article.findOneAndUpdate({
-          _id: req.params.id
-        }, { 
-          note: dbNote._id
-        }, { 
-          safe: true,  
-          new: true, 
-          upsert: true
-        });
-    })
-    .then(function(dbArticle) {
-      res.json(dbArticle);
-    })
-    .catch(function(err) {
-      res.json(err);
-    });
-  });
+//     db.Note.create(req.body)
+//     .then(function(dbNote) {
+//       return db.Article.findOneAndUpdate({
+//           _id: req.params.id
+//         }, { 
+//           note: dbNote._id
+//         }, { 
+//           safe: true,  
+//           new: true, 
+//           upsert: true
+//         });
+//     })
+//     .then(function(dbArticle) {
+//       res.json(dbArticle);
+//     })
+//     .catch(function(err) {
+//       res.json(err);
+//     });
+//   });
 
-  router.get("/notes/:id", (req, res) => {
-    db.Article.findById({ _id: req.params.id })
-    .populate("note")
-    .then(function(dbArticle) {
+//   router.get("/notes/:id", (req, res) => {
+//     db.Article.findById({ _id: req.params.id })
+//     .populate("note")
+//     .then(function(dbArticle) {
      
-      res.json(dbArticle)
-    })
-    .catch(function(err) {
-      res.json(err);
-    });
-  })
+//       res.json(dbArticle)
+//     })
+//     .catch(function(err) {
+//       res.json(err);
+//     });
+//   })
 
-  router.delete("articles/:id/:noteid", (req, res) => {
-      db.Note.findByIdAndRemove(req.params.noteid, function(error, doc) {
-          if (error) {
-              console.log(error);
-          } else {
-              db.Article.findOneAndUpdate({
-                _id: req.params.id
-              }, {
-                 $pull: {
-                    note: doc._id
-                 } 
-              })
-              .exec(function (err, doc) {
-                  if (err) {
-                    console.log(err);
-                  }
-              });
-          };
-      });
-  });
+//   router.delete("articles/:id/:noteid", (req, res) => {
+//       db.Note.findByIdAndRemove(req.params.noteid, function(error, doc) {
+//           if (error) {
+//               console.log(error);
+//           } else {
+//               db.Article.findOneAndUpdate({
+//                 _id: req.params.id
+//               }, {
+//                  $pull: {
+//                     note: doc._id
+//                  } 
+//               })
+//               .exec(function (err, doc) {
+//                   if (err) {
+//                     console.log(err);
+//                   }
+//               });
+//           };
+//       });
+//   });
 
-    //export of router //
-module.exports = router;
+//     //export of router //
+// module.exports = router;
