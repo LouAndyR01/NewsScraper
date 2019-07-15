@@ -150,7 +150,49 @@ app.delete("/api/saved/:id", function (req, res) {
         });
 });
 
+app.post("/api/saved", function (req, res) {
+    console.log(req.body);
 
+    var result = {};
+    result.title = req.body.title;
+    result.link = req.body.link;
+    result.summary = req.body.summary;
+
+    db.Save.create(result)
+    .then(function (dbSaved) {
+        console.log(dbSaved);
+    })
+    .catch(function (err) {
+        console.log(err);
+    });
+});
+
+app.get("/articles/:id", function (req, res) {
+    db.Article.findOne({ _id: req.params.id })
+        .populate("note")
+        .then(function (dbArticle) {
+            res.json(dbArticle);
+        })
+        .catch(function (err) {
+            res.json(err);
+        });
+});
+
+app.post("/api/notes/:id", function (req, res) {
+    db.Note.create(req.body)
+        .then(function (dbNote) {
+
+            return db.Save.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
+        })
+        .then(function (dbArticle) {
+            res.json(dbArticle);
+        })
+        .catch(function (err) {
+            res.json(err);
+        });
+});
+
+}
 
 
  
