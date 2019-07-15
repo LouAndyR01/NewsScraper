@@ -48,7 +48,7 @@
             });
 
         app.get("/scrape", function(req, res) {
-            axios.get("http://www.theonion.com/").then(function(response) {
+            axios.get("https://www.theonion.com/").then(function(response) {
 
         var $ = cheerio.load(response.data);
 
