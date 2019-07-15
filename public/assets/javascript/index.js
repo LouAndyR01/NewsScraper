@@ -19,9 +19,3 @@ var API = {
             type: "GET"
         });
     },
-    getArticle: function (id) {
-        return $.ajax({
-            url: "api/articles/" + id,
-            type: "GET"
-        });
-    },
