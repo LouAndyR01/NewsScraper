@@ -197,20 +197,5 @@ $.getJSON("/articles", function (data) {
 $(document).on("click", "p", function () {
     $("#notes").empty();
 
-    var thisId = $(this).attr("data-id");
 
-    $.ajax({
-        method: "GET",
-        url: "/articles/" + thisId
-    })
-        .then(function (data) {
-            console.log(data);
-            // The title of the article
-            $("#notes").append("<h2>" + data.title + "</h2>");
-            //input to enter a new title
-            $("#notes").append("<input id='titleinput' name='title' >");
-            //add a new note body
-            $("#notes").append("<textarea id='bodyinput' name='body'></textarea>");
-            //button to submit a new note, with the id of the article saved to it
-            $("#notes").append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
 
