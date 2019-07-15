@@ -246,10 +246,7 @@ $(document).on("click", "p", function () {
         $("#titleinput").val("");
         $("#bodyinput").val("");
     });
-    
-    
-    
-    
+        
     $("#newScrape").on("click", newScrape);
     $("#scrapeResults").on("click", ".saveIt", saveArticle);
     
