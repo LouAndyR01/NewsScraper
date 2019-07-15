@@ -69,9 +69,27 @@ app.delete("/api/articles", function (req, res) {
       });
 });
 
-
- 
+app.delete("/api/saved", function (req, res) {
+    db.Save.remove({})
+    .then(function (dbArticle) {
+        res.json(dbArticle);
+    })
+    .catch(function (err) {
+        res.json(err);
+    });
+});
     
+app.delete("/api/notes", function (req, res) {
+    db.Note.remove({})
+        .then(function (dbArticle) {
+            res.json(dbArticle);
+        })
+        .catch(function (err) {
+            res.json(err);
+        });
+});
+
+
 
  
 //       const $ = cheerio.load(response.data);
