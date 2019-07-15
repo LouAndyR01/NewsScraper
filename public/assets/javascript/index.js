@@ -197,5 +197,61 @@ $.getJSON("/articles", function (data) {
 $(document).on("click", "p", function () {
     $("#notes").empty();
 
+    $(document).on("click", "p", function () {
+        $("#notes").empty();
+        var thisId = $(this).attr("data-id");
+    
+        $.ajax({
+            method: "GET",
+            url: "/articles/" + thisId
+        })
 
+            .then(function (data) {
+                console.log(data);
+                //title of the article
+                $("#notes").append("<h2>" + data.title + "</h2>");
+                $("#notes").append("<input id='titleinput' name='title' >");
+                //add a new note body
+                $("#notes").append("<textarea id='bodyinput' name='body'></textarea>");
+                //submit a new note
+                $("#notes").append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
+    
+                // If there's a note in the article
+                if (data.note) {
+
+                    $("#titleinput").val(data.note.title);
+                    $("#bodyinput").val(data.note.body);
+                }
+            });
+    });
+    
+        //on click function to save note //
+    $(document).on("click", "#savenote", function () {
+        var thisId = $(this).attr("data-id");
+    
+        $.ajax({
+            method: "POST",
+            url: "/articles/" + thisId,
+            data: {
+                title: $("#titleinput").val(),
+                body: $("#bodyinput").val()
+            }
+        })
+        
+            .then(function (data) {
+                console.log(data);
+                $("#notes").empty();
+            });
+    
+        $("#titleinput").val("");
+        $("#bodyinput").val("");
+    });
+    
+    
+    
+    
+    $("#newScrape").on("click", newScrape);
+    $("#scrapeResults").on("click", ".saveIt", saveArticle);
+    
+    $("#clearScrapedArticles").on("click", deleteAllScraped);
 
