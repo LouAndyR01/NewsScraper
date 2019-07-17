@@ -16,25 +16,21 @@
         //Initializing express //
     var app = express();
 
-        //using for logging requests //
-    //   app.use(logger("dev"));
-
       app.use(express.urlencoded({ extended: true }));
       app.use(express.json());
 
-        //creat public static folder //  
+        //create public static folder //  
       app.use(express.static("public"));
 
        //If deployed, use the deployed database. Otherwise use the local mongoHeadlines database //
        //connect to Mongo db //
         var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
-
         mongoose.connect(MONGODB_URI);
 
         app.engine("handlebars", exphbs({ defaultLayout: "main" }));
         app.set("view engine", "handlebars");
 
-                // Routes
+                // Routes //
       app.get("/", function(req, res) {
             db.Article.find({})
                 .then(function(dbArticle) {
@@ -126,7 +122,6 @@ app.get("/articles", function(req, res) {
         res.json(dbArticle);
       })
       .catch(function(err) {
-        // If an error occurred, send it to the client
         res.json(err);
       });
   });
@@ -140,7 +135,6 @@ app.get("/articles", function(req, res) {
         res.json(dbArticle);
       })
       .catch(function(err) {
-             //send if error //
         res.json(err);
       });
   });
