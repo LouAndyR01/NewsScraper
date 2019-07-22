@@ -49,39 +49,72 @@
 
         var $ = cheerio.load(response.data);
 
-        $("div.headline").each(function(i, element) {
+        // $("div.headline").each(function(i, element) {
+
+        $("article").each(function(i, element) {
         
             var result = {};
             
-          result.title = $(this)
-          .children("a")
-          .text();
+          result.title = $(element).find('span.flytitle-and-title__title').text();
 
-          result.link = $(this)
-            .children("a")
-            .attr("href");
+          articleURL = $(element).find(".teaser__link").attr("href");
+          result.link = "https://www.economist.com" + articleURL;
+          img = $(element).find("a").parent().find("img").attr("src");
+          result.description = $(element).find(".teaser__text").text();
 
-          result.description = $(this)
-            .next()
-            .text();
+          if (img) {
+            result.img = img;
+          }
+          else {
+            result.img = $("div.component-image__img").find("img").attr("src");
+          }
+              // Searching through the database
+              db.Article.findOne({title:result.title},function(err,data){
+                if (!data)
+                {
+                    var entry = new db.Article(result);
+                          // Saving to database
+                          entry.save(function(err, data) {
+                            if (err) {
+                              console.log(err);
+                            }
+                            else {
+                              console.log("saving article, title: "+ data.title);
+                              console.log("Link:  " + data.link);
+                              console.log("Descriptoin:  " + data.description);
+                              console.log("Image link: " + data.img)
+                            }
+                          });
 
-        //Search the db for articles already scraped
-        db.Article.findOne({title:result.title},function(err,data){
-            //if new, add to db //
-            if (!data)
-            {
-                var entry = new db.Article(result);
 
-                entry.save(function(err, doc) {
-                    // Log any errors
-                    if (err) {
-                      console.log(err);
-                    }
-                    // Or log the doc
-                    else {
-                      console.log("saving article, title: "+ doc.title);
-                    }
-                  });
+  //         .children("a")
+  //         .text();
+
+  //         result.link = $(this)
+  //           .children("a")
+  //           .attr("href");
+
+  //         result.description = $(this)
+  //           .next()
+  //           .text();
+
+  //       //Search the db for articles already scraped
+  //       db.Article.findOne({title:result.title},function(err,data){
+  //           //if new, add to db //
+  //           if (!data)
+  //           {
+  //               var entry = new db.Article(result);
+
+  //               entry.save(function(err, doc) {
+  //                   // Log any errors
+  //                   if (err) {
+  //                     console.log(err);
+  //                   }
+  //                   // Or log the doc
+  //                   else {
+  //                     console.log("saving article, title: "+ doc.title);
+  //                   }
+  //                 });
 
         } else {
             console.log("this article is already in db: "+ data.title);
@@ -176,5 +209,3 @@ app.get("/articles", function(req, res) {
         app.listen(PORT, () => { 
             console.log("Successful Connection, Listening on PORT " + PORT)
         });
-
-        
