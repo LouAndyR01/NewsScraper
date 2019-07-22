@@ -16,7 +16,7 @@
         //Initializing express //
     var app = express();
 
-      app.use(express.urlencoded({ extended: true }));
+      app.use(express.urlencoded({ extended: false }));
       app.use(express.json());
 
         //create public static folder //  
@@ -58,7 +58,7 @@
           result.title = $(element).find('span.flytitle-and-title__title').text();
 
           articleURL = $(element).find(".teaser__link").attr("href");
-          result.link = "https://www.economist.com" + articleURL;
+          result.link = "https://www.nytimes.com" + articleURL;
           img = $(element).find("a").parent().find("img").attr("src");
           result.description = $(element).find(".teaser__text").text();
 
