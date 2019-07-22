@@ -26,6 +26,7 @@
        //connect to Mongo db //
         var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
         mongoose.connect(MONGODB_URI);
+        console.log("connected to mongoose!");
 
         app.engine("handlebars", exphbs({ defaultLayout: "main" }));
         app.set("view engine", "handlebars");
@@ -44,7 +45,7 @@
             });
 
         app.get("/scrape", function(req, res) {
-            axios.get("https://www.theonion.com/").then(function(response) {
+            axios.get("https://www.dallasnews.com/").then(function(response) {
 
         var $ = cheerio.load(response.data);
 
@@ -52,12 +53,14 @@
         
             var result = {};
             
-            result.title = $(this)
-            .children("a")
-            .text();
+          result.title = $(this)
+          .children("a")
+          .text();
+
           result.link = $(this)
             .children("a")
             .attr("href");
+            
           result.description = $(this)
             .next()
             .text();
