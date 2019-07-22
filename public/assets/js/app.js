@@ -12,7 +12,7 @@ $.ajax({
       console.log(data);
 
         //Show notes modal //
-      $("#results-modal").modal("toggle");
+      $("#note-modal").modal("toggle");
 
          //title of the article //
       $("#notes").append("<h2>" + data.title + "</h2>");
@@ -36,7 +36,7 @@ $.ajax({
 $("#savenote").on("click", function() {
     var thisId = $(this).attr("data-id");
         console.log(thisId);
-    $("#results-modal").modal("toggle");
+    $("#note-modal").modal("toggle");
 
     $.ajax({
         method: "POST",
