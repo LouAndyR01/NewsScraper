@@ -45,7 +45,7 @@
             });
 
         app.get("/scrape", function(req, res) {
-            axios.get("https://www.dallasnews.com/").then(function(response) {
+            axios.get("https://www.nytimes.com/").then(function(response) {
 
         var $ = cheerio.load(response.data);
 
@@ -60,7 +60,7 @@
           result.link = $(this)
             .children("a")
             .attr("href");
-            
+
           result.description = $(this)
             .next()
             .text();
